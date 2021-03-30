@@ -1,4 +1,3 @@
-import { IDocumentSelection } from './Document';
 import { UUID, getUUID } from './UUID';
 
 export const FRAGMENTABLETYPEID = 'fragmentedstring';
