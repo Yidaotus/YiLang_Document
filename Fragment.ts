@@ -34,6 +34,7 @@ export interface IFragmentableString {
 	root: string;
 	fragments: BlockFragment[];
 	showSpelling: boolean;
+	highlightedFragment?: UUID;
 }
 
 const FragmentableString = (initial?: string): IFragmentableString => ({
@@ -83,7 +84,6 @@ export type Fragment =
 export type BlockElement<T> = {
 	id: UUID;
 	range: IFragmentableRange;
-	isHighlighted?: boolean;
 	// Not yet used. Helpfull when different fragments overlap and get
 	// fragmented themselves
 	fragmented?: 'left' | 'right';
