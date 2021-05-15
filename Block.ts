@@ -36,7 +36,7 @@ export type BlockType = typeof blockTypes[number];
 interface IDocumentBlock {
 	id: UUID;
 	type: BlockType;
-	fragmentables: Map<UUID, IFragmentableString>;
+	fragmentables: { [key: string]: IFragmentableString };
 }
 
 type ITitleBlock = { type: 'Title' } & ISimpleBlock;
@@ -79,12 +79,12 @@ const createBlock = (parameters: BlockParameters): DocumentBlock => {
 				type: parameters.type,
 				content: fragmentable.id,
 				id: getUUID(),
-				fragmentables: new Map([[fragmentable.id, fragmentable]]),
+				fragmentables: { [fragmentable.id]: fragmentable },
 			};
 		}
 		case 'Dialog': {
 			const lines: IDialogBlockLine[] = [];
-			const fragmentables = new Map<UUID, IFragmentableString>();
+			const fragmentables: { [key: string]: IFragmentableString } = {};
 			for (const line of parameters.lines) {
 				const speech = line.speech.trim();
 				const speaker = line.speaker.trim();
@@ -94,7 +94,7 @@ const createBlock = (parameters: BlockParameters): DocumentBlock => {
 					// const frags = createaAhoFragments(speech);
 					// fragmentable.fragments = frags;
 				}
-				fragmentables.set(fragmentable.id, fragmentable);
+				fragmentables[fragmentable.id] = fragmentable;
 			}
 			return { type: 'Dialog', id: getUUID(), lines, fragmentables };
 		}
@@ -103,7 +103,7 @@ const createBlock = (parameters: BlockParameters): DocumentBlock => {
 				type: 'Image',
 				source: parameters.source,
 				id: getUUID(),
-				fragmentables: new Map(),
+				fragmentables: {},
 			};
 		default:
 			return assertNever(parameters);

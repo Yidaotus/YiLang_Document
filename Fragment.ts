@@ -43,7 +43,7 @@ const FragmentableString = (initial?: string): IFragmentableString => ({
 	showSpelling: true,
 });
 
-interface ITextFragment {
+export interface ITextFragment {
 	type: FragmentType;
 }
 
@@ -121,6 +121,12 @@ const isBetween = ({
 // right now
 function isFragmentType<T extends Fragment>(t: FragmentType) {
 	return (x: Fragment): x is T => {
+		return x.type === t;
+	};
+}
+
+function isBlockFragment<T extends BlockFragment>(t: FragmentType) {
+	return (x: BlockFragment): x is T => {
 		return x.type === t;
 	};
 }
@@ -291,12 +297,25 @@ const removeFragmentsInRange = ({
 	);
 };
 
+const normalizeRange = ({
+	normalizer,
+	target,
+}: {
+	normalizer: IFragmentableRange;
+	target: IFragmentableRange;
+}): IFragmentableRange => ({
+	start: target.start - normalizer.start,
+	end: target.end - normalizer.start,
+});
+
 export {
 	FragmentableString,
 	checkFragmentInRange,
 	isBetween,
 	isFragmentType,
+	isBlockFragment,
 	removeFragmentsInRange,
 	pushFragment,
 	getFragmentsInRange,
+	normalizeRange,
 };

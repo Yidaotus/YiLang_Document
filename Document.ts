@@ -3,14 +3,10 @@ import { IFragmentableRange } from './Fragment';
 import { UUID } from './UUID';
 
 export interface IDocument {
-	title: string;
-	lang: string;
-	source?: string;
-	blocks: Map<UUID, DocumentBlock>;
-	positions: Map<UUID, number>;
+	blocks: { [key: string]: DocumentBlock };
+	positions: { [key: string]: number };
 	movedBlock: UUID | null;
-	documentDictionary: Map<UUID, IDictEntry>;
-	documentSentences: Map<UUID, string>;
+	tags: { [key: string]: IEntryTag };
 }
 
 export enum HighlightStyle {
@@ -59,7 +55,7 @@ export interface ISource<T> {
 	source: T;
 }
 
-export interface IDictEntry {
+export interface IDictionaryEntry {
 	key: string;
 	lang: string;
 	translations: string[];
@@ -98,4 +94,10 @@ export interface IDocumentSelection {
 	blockId: UUID;
 	fragmentableId: UUID;
 	fragmentableRange: IFragmentableRange;
+}
+
+export interface IDocumentIdentifier {
+	blockId: UUID;
+	fragmentableId: UUID;
+	fragmentId: UUID;
 }
