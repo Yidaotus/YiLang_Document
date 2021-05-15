@@ -35,6 +35,7 @@ export interface IGrammarPoint {
 }
 
 export interface IEntryTag {
+	id: UUID;
 	name: string;
 	color?: string;
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
@@ -61,7 +62,7 @@ export interface IDictionaryEntry {
 	translations: string[];
 	sourceDocument?: ISource<IDocument>;
 	firstSeen?: ISource<ISentence>;
-	tags: IEntryTag[];
+	tags: UUID[];
 	// type: IEntryType;
 	comment?: string;
 	spelling?: string;
@@ -70,7 +71,7 @@ export interface IDictionaryEntry {
 
 export interface IDictionaryVariant {
 	key: string;
-	tags?: IEntryTag[];
+	tags?: UUID[];
 	comment: string;
 	spelling?: string;
 }
