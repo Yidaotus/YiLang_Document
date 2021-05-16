@@ -123,7 +123,8 @@ const parseBlock = ({
 			return createBlock({ type, content, checkDictionary: false });
 		}
 		case 'Image': {
-			const regex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm;
+			const regex =
+				/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/gm;
 			if (!regex.test(content)) {
 				const error = new Error(
 					`To create an image block please enter a valid url to your image!`
