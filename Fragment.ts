@@ -8,7 +8,6 @@ export interface IFragmentableRange {
 	start: number;
 	end: number;
 }
-
 export interface IFragmentIntersectResult {
 	fragment: BlockFragment;
 	intersectType: IntersectType;
