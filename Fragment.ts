@@ -13,6 +13,13 @@ export interface IFragmentIntersectResult {
 	intersectType: IntersectType;
 }
 
+type FragmentSelectionType =
+	| { type: 'root' }
+	| { type: 'nested'; parent: FragmentSelectionResult };
+
+export type FragmentSelectionResult = IFragmentIntersectResult &
+	FragmentSelectionType;
+
 // Fragments and RenderableFragments are seperated because the process
 // of craeting fragments usually is done in two steps.
 // 1.) Creating a fragment without knowing where to place it yet
@@ -115,6 +122,17 @@ const isBetween = ({
 	return target >= start && target < end;
 };
 
+const normalizeRange = ({
+	normalizer,
+	target,
+}: {
+	normalizer: IFragmentableRange;
+	target: IFragmentableRange;
+}): IFragmentableRange => ({
+	start: target.start - normalizer.start,
+	end: target.end - normalizer.start,
+});
+
 // Helper to generate a type guard for a fragment type
 // @TODO there must be a cleaner version but I can't think of any
 // right now
@@ -158,7 +176,7 @@ const checkFragmentInRange = ({
  * @param filter Type of fragments to consider while checking in range
  * @returns Every fragment in range of range and type of filter
  */
-const getFragmentsInRange = ({
+const getIntersectingFragments = ({
 	range,
 	fragments,
 	filter,
@@ -203,6 +221,47 @@ const getFragmentsInRange = ({
 	return intersectedFragments;
 };
 
+const getFragmentsInRange = ({
+	range,
+	fragments,
+}: {
+	range: IFragmentableRange;
+	fragments: BlockFragment[];
+}): FragmentSelectionResult[] => {
+	const selectionResult: FragmentSelectionResult[] = [];
+	const intersectResults = getIntersectingFragments({
+		range,
+		fragments,
+	});
+
+	for (const intersectResult of intersectResults) {
+		const fragmentSelection: FragmentSelectionResult = {
+			...intersectResult,
+			type: 'root',
+		};
+		selectionResult.push(fragmentSelection);
+		if (fragmentSelection.fragment.type === 'Sentence') {
+			const currentRange = range;
+			const normalizedRange = normalizeRange({
+				normalizer: fragmentSelection.fragment.range,
+				target: currentRange,
+			});
+			const activeInnerFragments: FragmentSelectionResult[] =
+				getIntersectingFragments({
+					range: normalizedRange,
+					fragments: fragmentSelection.fragment.words,
+					filter: 'Word',
+				}).map((res) => ({
+					...res,
+					type: 'nested',
+					parent: fragmentSelection,
+				}));
+			selectionResult.push(...activeInnerFragments);
+		}
+	}
+	return selectionResult;
+};
+
 /**
  * Checks if the target intersects with any other range and returns a new fragment array:
  *
@@ -220,7 +279,7 @@ const pushFragment = ({
 	target: BlockFragment;
 	fragments: BlockFragment[];
 }): BlockFragment[] => {
-	const intersections = getFragmentsInRange({
+	const intersections = getIntersectingFragments({
 		range: target.range,
 		fragments,
 	});
@@ -286,7 +345,7 @@ const removeFragmentsInRange = ({
 	fragments: BlockFragment[];
 	filter?: FragmentType;
 }): BlockFragment[] => {
-	const inRangeFragments = getFragmentsInRange({
+	const inRangeFragments = getIntersectingFragments({
 		range,
 		fragments,
 		filter,
@@ -296,17 +355,6 @@ const removeFragmentsInRange = ({
 	);
 };
 
-const normalizeRange = ({
-	normalizer,
-	target,
-}: {
-	normalizer: IFragmentableRange;
-	target: IFragmentableRange;
-}): IFragmentableRange => ({
-	start: target.start - normalizer.start,
-	end: target.end - normalizer.start,
-});
-
 export {
 	FragmentableString,
 	checkFragmentInRange,
@@ -315,6 +363,7 @@ export {
 	isBlockFragment,
 	removeFragmentsInRange,
 	pushFragment,
+	getIntersectingFragments,
 	getFragmentsInRange,
 	normalizeRange,
 };
