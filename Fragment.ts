@@ -11,14 +11,12 @@ export interface IFragmentableRange {
 export interface IFragmentIntersectResult {
 	fragment: BlockFragment;
 	intersectType: IntersectType;
+	children?: IFragmentIntersectResult[];
 }
 
-type FragmentSelectionType =
-	| { type: 'root' }
-	| { type: 'nested'; parent: FragmentSelectionResult };
-
-export type FragmentSelectionResult = IFragmentIntersectResult &
-	FragmentSelectionType;
+export type FragmentSelectionResult = IFragmentIntersectResult & {
+	children?: IFragmentIntersectResult[];
+};
 
 // Fragments and RenderableFragments are seperated because the process
 // of craeting fragments usually is done in two steps.
@@ -237,7 +235,6 @@ const getFragmentsInRange = ({
 	for (const intersectResult of intersectResults) {
 		const fragmentSelection: FragmentSelectionResult = {
 			...intersectResult,
-			type: 'root',
 		};
 		selectionResult.push(fragmentSelection);
 		if (fragmentSelection.fragment.type === 'Sentence') {
@@ -256,10 +253,27 @@ const getFragmentsInRange = ({
 					type: 'nested',
 					parent: fragmentSelection,
 				}));
-			selectionResult.push(...activeInnerFragments);
+			fragmentSelection.children = activeInnerFragments;
 		}
 	}
 	return selectionResult;
+};
+const checkSelectionForType = ({
+	type,
+	selectedFragments,
+}: {
+	type: FragmentType;
+	selectedFragments: FragmentSelectionResult[];
+}): boolean => {
+	return !!selectedFragments.find((f) => {
+		if (f.fragment.type === type) {
+			return true;
+		}
+		if (f.children) {
+			return f.children.find((cf) => cf.fragment.type === type);
+		}
+		return false;
+	});
 };
 
 /**
@@ -365,5 +379,6 @@ export {
 	pushFragment,
 	getIntersectingFragments,
 	getFragmentsInRange,
+	checkSelectionForType,
 	normalizeRange,
 };
