@@ -3,10 +3,11 @@ import { IFragmentableRange } from './Fragment';
 import { UUID } from './UUID';
 
 export interface IDocument {
+	createdAt: Date;
+	updatedAt: Date;
+	id: UUID;
 	blocks: { [key: string]: DocumentBlock };
 	positions: { [key: string]: number };
-	movedBlock: UUID | null;
-	tags: { [key: string]: IEntryTag };
 }
 
 export enum HighlightStyle {
@@ -57,6 +58,7 @@ export interface ISource<T> {
 }
 
 export interface IDictionaryEntry {
+	id: UUID;
 	key: string;
 	lang: string;
 	translations: string[];
