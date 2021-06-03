@@ -1,54 +1,51 @@
 import { getUUID, UUID } from './UUID';
 import { FragmentableString, IFragmentableString } from './Fragment';
 
-export interface ISimpleBlock {
-	content: UUID;
+const blockTypes = ['Title', 'Paragraph', 'Dialog', 'Image'] as const;
+export type BlockType = typeof blockTypes[number];
+
+type ContentIdentifier = UUID;
+interface IDocumentBlock {
+	id: ContentIdentifier;
+	type: BlockType;
+	fragmentables: { [key: string]: IFragmentableString };
 }
 
-export interface IDialogLine {
-	speaker: string;
-	speech: IFragmentableString;
+export interface ITitleBlock extends IDocumentBlock {
+	type: 'Title';
+	content: ContentIdentifier;
+}
+
+export interface IParagraphBlock extends IDocumentBlock {
+	type: 'Paragraph';
+	content: ContentIdentifier;
 }
 
 export interface IDialogBlockLine {
 	speaker: string;
-	speech: UUID;
+	speech: ContentIdentifier;
 }
 
-export interface IDialogBlock {
+export interface IDialogBlock extends IDocumentBlock {
 	lines: IDialogBlockLine[];
 	type: 'Dialog';
 }
 
-export interface IImageBlock {
+export interface IImageBlock extends IDocumentBlock {
 	type: 'Image';
 	source: string;
 	title?: string;
 }
 
+export type DocumentBlock =
+	| IImageBlock
+	| IDialogBlock
+	| ITitleBlock
+	| IParagraphBlock;
+
 const assertNever = (x: never): never => {
 	throw new Error(`Unexpected object: ${x}`);
 };
-
-const blockTypes = ['Title', 'Paragraph', 'Dialog', 'Image'] as const;
-export type BlockType = typeof blockTypes[number];
-
-interface IDocumentBlock {
-	id: UUID;
-	type: BlockType;
-	fragmentables: { [key: string]: IFragmentableString };
-}
-
-type ITitleBlock = { type: 'Title' } & ISimpleBlock;
-type IParagraphBlock = { type: 'Paragraph' } & ISimpleBlock;
-
-type Block<T> = T & IDocumentBlock;
-
-export type DocumentBlock =
-	| Block<IImageBlock>
-	| Block<IDialogBlock>
-	| Block<ITitleBlock>
-	| Block<IParagraphBlock>;
 
 type BlockParameters = { checkDictionary: boolean } & (
 	| {

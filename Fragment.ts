@@ -8,8 +8,9 @@ export interface IFragmentableRange {
 	start: number;
 	end: number;
 }
+
 export interface IFragmentIntersectResult {
-	fragment: BlockFragment;
+	fragment: Fragment;
 	intersectType: IntersectType;
 	children?: IFragmentIntersectResult[];
 }
@@ -33,10 +34,60 @@ const fragmentTypes = [
 ] as const;
 export type FragmentType = typeof fragmentTypes[number];
 
+export interface IFragmentData {
+	type: FragmentType;
+}
+
+export interface ISimpleFragmentData extends IFragmentData {
+	type: 'Highlight' | 'Background';
+}
+
+export interface IMarkFragmentData extends IFragmentData {
+	type: 'Mark';
+	color: string;
+	comment?: string;
+}
+
+export interface IWordFragmentData extends IFragmentData {
+	type: 'Word';
+	dictId: UUID;
+}
+
+export interface ISentenceFragmentData extends IFragmentData {
+	type: 'Sentence';
+	translation: string;
+	words: Array<IFragment<IWordFragmentData>>;
+}
+
+export interface INoteFragmentData extends IFragmentData {
+	type: 'Note';
+	note: string;
+}
+
+export interface IFragment<T extends IFragmentData> {
+	id: UUID;
+	range: IFragmentableRange;
+	// Not yet used. Helpfull when different fragments overlap and get
+	// fragmented themselves
+	fragmented?: 'left' | 'right';
+	type: T['type'];
+	data: Omit<T, 'type'>;
+}
+
+export type Fragment =
+	| IFragment<IWordFragmentData>
+	| IFragment<ISimpleFragmentData>
+	| IFragment<ISentenceFragmentData>
+	| IFragment<IMarkFragmentData>
+	| IFragment<INoteFragmentData>;
+
+export type ResolvedFragment<T extends IFragmentData> = IFragment<T> & {
+	value: string;
+};
 export interface IFragmentableString {
 	id: UUID;
 	root: string;
-	fragments: BlockFragment[];
+	fragments: Fragment[];
 	showSpelling: boolean;
 	highlightedFragment?: UUID;
 }
@@ -47,60 +98,6 @@ const FragmentableString = (initial?: string): IFragmentableString => ({
 	fragments: [],
 	showSpelling: true,
 });
-
-export interface ITextFragment {
-	type: FragmentType;
-}
-
-export interface ISimpleFragment extends ITextFragment {
-	type: 'Highlight' | 'Background';
-}
-
-export interface IMarkFragment extends ITextFragment {
-	type: 'Mark';
-	color: string;
-	comment?: string;
-}
-
-export interface IWordFragment extends ITextFragment {
-	type: 'Word';
-	dictId: UUID;
-}
-
-export interface ISentenceFragment extends ITextFragment {
-	type: 'Sentence';
-	translation: string;
-	words: Array<BlockElement<IWordFragment>>;
-}
-
-export interface INoteFragment extends ITextFragment {
-	type: 'Note';
-	note: string;
-}
-
-export type Fragment =
-	| ISimpleFragment
-	| IMarkFragment
-	| ISentenceFragment
-	| INoteFragment
-	| IWordFragment;
-
-export type BlockElement<T> = {
-	id: UUID;
-	range: IFragmentableRange;
-	// Not yet used. Helpfull when different fragments overlap and get
-	// fragmented themselves
-	fragmented?: 'left' | 'right';
-} & T;
-
-export type BlockFragment =
-	| BlockElement<ISimpleFragment>
-	| BlockElement<IMarkFragment>
-	| BlockElement<ISentenceFragment>
-	| BlockElement<INoteFragment>
-	| BlockElement<IWordFragment>;
-
-export type ResolvedBlockElement<T> = BlockElement<T> & { value: string };
 
 /**
  * Check if the target is between the given range
@@ -131,17 +128,16 @@ const normalizeRange = ({
 	end: target.end - normalizer.start,
 });
 
+function isFragType<T extends IFragmentData>(
+	fragment: IFragment<T>
+): fragment is IFragment<T> {
+	return fragment.type === 
+}
 // Helper to generate a type guard for a fragment type
 // @TODO there must be a cleaner version but I can't think of any
 // right now
-function isFragmentType<T extends Fragment>(t: FragmentType) {
-	return (x: Fragment): x is T => {
-		return x.type === t;
-	};
-}
-
-function isBlockFragment<T extends BlockFragment>(t: FragmentType) {
-	return (x: BlockFragment): x is T => {
+function isFragmentType<T extends IFragmentData>(t: FragmentType) {
+	return (x: IFragment<T>): x is IFragment<T> => {
 		return x.type === t;
 	};
 }
@@ -159,7 +155,7 @@ const checkFragmentInRange = ({
 	fragment,
 }: {
 	range: IFragmentableRange;
-	fragment: BlockFragment;
+	fragment: Fragment;
 }): boolean => {
 	return (
 		isBetween({ target: fragment.range.start, range }) ||
@@ -180,7 +176,7 @@ const getIntersectingFragments = ({
 	filter,
 }: {
 	range: IFragmentableRange;
-	fragments: BlockFragment[];
+	fragments: Fragment[];
 	filter?: FragmentType;
 }): IFragmentIntersectResult[] => {
 	const intersectedFragments: IFragmentIntersectResult[] = [];
@@ -224,7 +220,7 @@ const getFragmentsInRange = ({
 	fragments,
 }: {
 	range: IFragmentableRange;
-	fragments: BlockFragment[];
+	fragments: Fragment[];
 }): FragmentSelectionResult[] => {
 	const selectionResult: FragmentSelectionResult[] = [];
 	const intersectResults = getIntersectingFragments({
@@ -246,7 +242,7 @@ const getFragmentsInRange = ({
 			const activeInnerFragments: FragmentSelectionResult[] =
 				getIntersectingFragments({
 					range: normalizedRange,
-					fragments: fragmentSelection.fragment.words,
+					fragments: fragmentSelection.fragment.data.words,
 					filter: 'Word',
 				}).map((res) => ({
 					...res,
@@ -290,9 +286,9 @@ const pushFragment = ({
 	target,
 	fragments,
 }: {
-	target: BlockFragment;
-	fragments: BlockFragment[];
-}): BlockFragment[] => {
+	target: Fragment;
+	fragments: Fragment[];
+}): Fragment[] => {
 	const intersections = getIntersectingFragments({
 		range: target.range,
 		fragments,
@@ -308,7 +304,7 @@ const pushFragment = ({
 							end: intersection.fragment.range.start,
 						},
 					};
-					const rightFragment: BlockFragment = {
+					const rightFragment: Fragment = {
 						...target,
 						range: {
 							start: intersection.fragment.range.end,
@@ -325,7 +321,7 @@ const pushFragment = ({
 							end: intersection.fragment.range.start,
 						},
 					};
-					const rightFragment: BlockFragment = {
+					const rightFragment: Fragment = {
 						...target,
 						range: {
 							start: intersection.fragment.range.end,
@@ -356,9 +352,9 @@ const removeFragmentsInRange = ({
 	filter,
 }: {
 	range: IFragmentableRange;
-	fragments: BlockFragment[];
+	fragments: Fragment[];
 	filter?: FragmentType;
-}): BlockFragment[] => {
+}): Fragment[] => {
 	const inRangeFragments = getIntersectingFragments({
 		range,
 		fragments,
@@ -374,7 +370,6 @@ export {
 	checkFragmentInRange,
 	isBetween,
 	isFragmentType,
-	isBlockFragment,
 	removeFragmentsInRange,
 	pushFragment,
 	getIntersectingFragments,
