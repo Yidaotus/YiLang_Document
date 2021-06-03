@@ -29,7 +29,6 @@ const fragmentTypes = [
 	'Word',
 	'Note',
 	'Highlight',
-	'Text',
 	'Background',
 ] as const;
 export type FragmentType = typeof fragmentTypes[number];
@@ -63,6 +62,13 @@ export interface INoteFragmentData extends IFragmentData {
 	type: 'Note';
 	note: string;
 }
+
+export type FragmentData =
+	| INoteFragmentData
+	| ISentenceFragmentData
+	| IWordFragmentData
+	| IMarkFragmentData
+	| ISimpleFragmentData;
 
 export interface IFragment<T extends IFragmentData> {
 	id: UUID;
@@ -128,16 +134,16 @@ const normalizeRange = ({
 	end: target.end - normalizer.start,
 });
 
-function isFragType<T extends IFragmentData>(
-	fragment: IFragment<T>
-): fragment is IFragment<T> {
-	return fragment.type === 
-}
 // Helper to generate a type guard for a fragment type
-// @TODO there must be a cleaner version but I can't think of any
-// right now
-function isFragmentType<T extends IFragmentData>(t: FragmentType) {
-	return (x: IFragment<T>): x is IFragment<T> => {
+
+function isFragmentDataType<T extends FragmentData['type']>(t: T) {
+	return (x: FragmentData): x is Extract<FragmentData, { type: T }> => {
+		return x.type === t;
+	};
+}
+
+function isFragmentType<T extends Fragment['type']>(t: T) {
+	return (x: Fragment): x is Extract<Fragment, { type: T }> => {
 		return x.type === t;
 	};
 }
@@ -370,6 +376,7 @@ export {
 	checkFragmentInRange,
 	isBetween,
 	isFragmentType,
+	isFragmentDataType,
 	removeFragmentsInRange,
 	pushFragment,
 	getIntersectingFragments,

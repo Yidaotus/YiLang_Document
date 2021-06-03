@@ -4,6 +4,11 @@ import { FragmentableString, IFragmentableString } from './Fragment';
 const blockTypes = ['Title', 'Paragraph', 'Dialog', 'Image'] as const;
 export type BlockType = typeof blockTypes[number];
 
+export interface IDialogLine {
+	speaker: string;
+	speech: IFragmentableString;
+}
+
 type ContentIdentifier = UUID;
 interface IDocumentBlock {
 	id: ContentIdentifier;
