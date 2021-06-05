@@ -93,7 +93,7 @@ export type ResolvedFragment<T extends IFragmentData> = IFragment<T> & {
 export interface IFragmentableString {
 	id: UUID;
 	root: string;
-	fragments: Fragment[];
+	fragments: Array<Fragment>;
 	showSpelling: boolean;
 	highlightedFragment?: UUID;
 }
