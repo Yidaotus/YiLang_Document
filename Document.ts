@@ -3,8 +3,10 @@ import { IFragmentableRange } from './Fragment';
 import { UUID } from './UUID';
 
 export interface IDocument {
+	name?: string;
 	createdAt: Date;
 	updatedAt: Date;
+	title: string;
 	id: UUID;
 	blocks: Array<DocumentBlock>;
 }

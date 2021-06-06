@@ -1,4 +1,3 @@
-import { FragemntableStringNormalized } from 'store/editor/types';
 import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
@@ -7,7 +6,7 @@ export type BlockType = typeof blockTypes[number];
 
 export interface IDialogLine {
 	speaker: string;
-	speech: FragemntableStringNormalized;
+	speech: string;
 }
 
 type ContentIdentifier = UUID;
