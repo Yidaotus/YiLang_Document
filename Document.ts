@@ -5,7 +5,8 @@ import { UUID } from './UUID';
 export interface IDocument {
 	createdAt: Date;
 	updatedAt: Date;
-	id: UUID;
+	title: string;
+	id?: UUID;
 	blocks: Array<DocumentBlock>;
 }
 
