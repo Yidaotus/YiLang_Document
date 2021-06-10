@@ -1,4 +1,5 @@
 import { FragemntableStringNormalized } from 'store/editor/types';
+import { ReactNode } from 'react';
 import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
@@ -89,20 +90,23 @@ const isBlockType =
 	};
 
 export type BlockConfigurator<
-	T extends ConfigurableBlock,
+	T extends IConfigurableDocumentBlock<unknown>,
 	V extends keyof T['config']
-> = {
-	blockType: T['type'];
-	title: string;
-	icon: React.ReactNode;
-	parameter: V;
-	value: T['config'][V];
-};
+> = T extends IConfigurableDocumentBlock<infer R>
+	? {
+			icon: ReactNode;
+			title: string;
+			parameter: V;
+			value: T['config'][V] | ((config: R) => T['config'][V]);
+	  }
+	: never;
 
-/* 
-function notUndefined<T>(x: T | undefined): x is T {
-	return x !== undefined;
+export interface IBlockDefinition<T extends DocumentBlock> {
+	type: T['type'];
+	block: React.FC<any>;
+	configurators: T extends IConfigurableDocumentBlock<infer R>
+		? Array<BlockConfigurator<T, keyof R>>
+		: [];
 }
-*/
 
 export { blockTypes, isConfigurableBlock, isBlockType };
