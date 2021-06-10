@@ -101,9 +101,9 @@ export type BlockConfigurator<
 	  }
 	: never;
 
-export interface IBlockDefinition<T extends DocumentBlock> {
+export interface IBlockDefinition<T extends DocumentBlock, P> {
 	type: T['type'];
-	block: React.FC<any>;
+	block: React.FC<P>;
 	configurators: T extends IConfigurableDocumentBlock<infer R>
 		? Array<BlockConfigurator<T, keyof R>>
 		: [];
