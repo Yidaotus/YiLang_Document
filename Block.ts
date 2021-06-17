@@ -1,20 +1,13 @@
-import { FragemntableStringNormalized } from 'store/editor/types';
-import { ReactNode } from 'react';
+import { FragmentableStringNormalized } from 'store/editor/types';
 import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
-const blockTypes = [
-	'Title',
-	'DocumentTitle',
-	'Paragraph',
-	'Dialog',
-	'Image',
-] as const;
+const blockTypes = ['Title', 'Paragraph', 'Dialog', 'List', 'Image'] as const;
 export type BlockType = typeof blockTypes[number];
 
 export interface IDialogLine {
 	speaker: string;
-	speech: FragemntableStringNormalized;
+	speech: FragmentableStringNormalized;
 }
 
 type ContentIdentifier = UUID;
@@ -34,10 +27,10 @@ export interface IConfigurableDocumentBlock<T> extends IDocumentBlock {
 	config: T;
 }
 
-export interface IDocumentTitleBlock extends IDocumentBlock {
+/* export interface IDocumentTitleBlock extends IDocumentBlock {
 	type: 'DocumentTitle';
 	content: ContentIdentifier;
-}
+} */
 
 export interface ITitleBlockConfig {
 	size: number;
@@ -71,17 +64,29 @@ export interface IImageBlock
 	extends IConfigurableDocumentBlock<IImageBlockConfig> {
 	type: 'Image';
 	source: string;
-	title?: string;
+	title?: ContentIdentifier;
+}
+
+export interface IListBlockConfig {
+	style: 'ordered' | 'unordered';
+}
+export interface IListBlock
+	extends IConfigurableDocumentBlock<IListBlockConfig> {
+	type: 'List';
+	items: ContentIdentifier[];
 }
 
 export type DocumentBlock =
 	| IImageBlock
 	| IDialogBlock
 	| ITitleBlock
-	| IDocumentTitleBlock
+	| IListBlock
 	| IParagraphBlock;
 
-export type ConfigurableBlock = IImageBlock | ITitleBlock;
+export type ConfigurableBlockList<T> =
+	T extends IConfigurableDocumentBlock<unknown> ? T : never;
+
+export type ConfigurableBlock = ConfigurableBlockList<DocumentBlock>;
 
 const isBlockType =
 	<T extends DocumentBlock['type']>(type: T) =>
@@ -89,24 +94,9 @@ const isBlockType =
 		return block.type === type;
 	};
 
-export type BlockConfigurator<
-	T extends IConfigurableDocumentBlock<unknown>,
-	V extends keyof T['config']
-> = T extends IConfigurableDocumentBlock<infer R>
-	? {
-			icon: ReactNode;
-			title: string;
-			parameter: V;
-			value: T['config'][V] | ((config: R) => T['config'][V]);
-	  }
-	: never;
-
-export interface IBlockDefinition<T extends DocumentBlock, P> {
-	type: T['type'];
-	block: React.FC<P>;
-	configurators: T extends IConfigurableDocumentBlock<infer R>
-		? Array<BlockConfigurator<T, keyof R>>
-		: [];
-}
+export type ConfigForType<T extends BlockType> = Extract<
+	ConfigurableBlock,
+	{ type: T }
+>['config'];
 
 export { blockTypes, isConfigurableBlock, isBlockType };
