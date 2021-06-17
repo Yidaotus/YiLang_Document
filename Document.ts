@@ -1,5 +1,6 @@
 import { DocumentBlock } from './Block';
 import { IFragmentableRange } from './Fragment';
+import { BlockRenderMap } from './RenderMap';
 import { UUID } from './UUID';
 
 export interface IDocument {
@@ -9,6 +10,7 @@ export interface IDocument {
 	title: string;
 	id?: UUID;
 	blocks: Array<DocumentBlock>;
+	renderMap: BlockRenderMap;
 }
 
 export enum HighlightStyle {
