@@ -2,8 +2,17 @@ import { FragmentableStringNormalized } from 'store/editor/types';
 import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
-const blockTypes = ['Title', 'Paragraph', 'Dialog', 'List', 'Image'] as const;
+/*
+const blockTypes = [
+	'Title',
+	'Paragraph',
+	'Dialog',
+	'List',
+	'Image',
+	'Subtitle',
+] as const;
 export type BlockType = typeof blockTypes[number];
+*/
 
 export interface IDialogLine {
 	speaker: string;
@@ -11,20 +20,12 @@ export interface IDialogLine {
 }
 
 type ContentIdentifier = UUID;
-export interface IDocumentBlock {
+export interface IDocumentBlock<T extends BlockType, C = undefined> {
 	id: ContentIdentifier;
-	type: BlockType;
+	type: T;
 	fragmentables: Array<IFragmentableString>;
 	position: number;
-}
-
-const isConfigurableBlock = (
-	block: IDocumentBlock
-): block is IConfigurableDocumentBlock<unknown> => {
-	return (block as IConfigurableDocumentBlock<unknown>).config !== undefined;
-};
-export interface IConfigurableDocumentBlock<T> extends IDocumentBlock {
-	config: T;
+	config: C;
 }
 
 /* export interface IDocumentTitleBlock extends IDocumentBlock {
@@ -37,13 +38,11 @@ export interface ITitleBlockConfig {
 	subtitle: boolean;
 }
 export interface ITitleBlock
-	extends IConfigurableDocumentBlock<ITitleBlockConfig> {
-	type: 'Title';
+	extends IDocumentBlock<'Title', ITitleBlockConfig> {
 	content: ContentIdentifier;
 }
 
-export interface IParagraphBlock extends IDocumentBlock {
-	type: 'Paragraph';
+export interface IParagraphBlock extends IDocumentBlock<'Paragraph'> {
 	content: ContentIdentifier;
 }
 
@@ -52,17 +51,15 @@ export interface IDialogBlockLine {
 	speech: ContentIdentifier;
 }
 
-export interface IDialogBlock extends IDocumentBlock {
+export interface IDialogBlock extends IDocumentBlock<'Dialog'> {
 	lines: IDialogBlockLine[];
-	type: 'Dialog';
 }
 
 export interface IImageBlockConfig {
 	alignment: 'center' | 'left' | 'right';
 }
 export interface IImageBlock
-	extends IConfigurableDocumentBlock<IImageBlockConfig> {
-	type: 'Image';
+	extends IDocumentBlock<'Image', IImageBlockConfig> {
 	source: string;
 	title?: ContentIdentifier;
 }
@@ -70,23 +67,18 @@ export interface IImageBlock
 export interface IListBlockConfig {
 	style: 'ordered' | 'unordered';
 }
-export interface IListBlock
-	extends IConfigurableDocumentBlock<IListBlockConfig> {
-	type: 'List';
+export interface IListBlock extends IDocumentBlock<'List', IListBlockConfig> {
 	items: ContentIdentifier[];
 }
 
 export type DocumentBlock =
 	| IImageBlock
 	| IDialogBlock
-	| ITitleBlock
 	| IListBlock
+	| ITitleBlock
 	| IParagraphBlock;
 
-export type ConfigurableBlockList<T> =
-	T extends IConfigurableDocumentBlock<unknown> ? T : never;
-
-export type ConfigurableBlock = ConfigurableBlockList<DocumentBlock>;
+export type BlockType = DocumentBlock['type'];
 
 const isBlockType =
 	<T extends DocumentBlock['type']>(type: T) =>
@@ -95,8 +87,8 @@ const isBlockType =
 	};
 
 export type ConfigForType<T extends BlockType> = Extract<
-	ConfigurableBlock,
+	DocumentBlock,
 	{ type: T }
 >['config'];
 
-export { blockTypes, isConfigurableBlock, isBlockType };
+export { isBlockType };
