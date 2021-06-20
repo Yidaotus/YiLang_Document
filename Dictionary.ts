@@ -52,6 +52,7 @@ export interface IGrammarPoint {
 export interface IDictionaryTag {
 	id: UUID;
 	name: string;
+	lang: string;
 	color?: string;
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
 }
