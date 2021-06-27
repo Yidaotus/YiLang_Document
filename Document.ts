@@ -8,7 +8,7 @@ export interface IDocument {
 	createdAt: Date;
 	updatedAt: Date;
 	title: string;
-	id?: UUID;
+	id: UUID;
 	blocks: Array<DocumentBlock>;
 	renderMap: BlockRenderMap;
 }
@@ -51,4 +51,10 @@ export interface IDocumentIdentifier {
 	blockId: UUID;
 	fragmentableId: UUID;
 	fragmentId: UUID;
+}
+
+export interface IDocumentLink {
+	documentId: UUID;
+	fragmentableId: UUID;
+	offset: number;
 }

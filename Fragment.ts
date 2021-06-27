@@ -77,7 +77,7 @@ export interface IFragment<T extends IFragmentData> {
 	// fragmented themselves
 	fragmented?: 'left' | 'right';
 	type: T['type'];
-	data: Omit<T, 'type'>;
+	data: T;
 }
 
 export type Fragment =

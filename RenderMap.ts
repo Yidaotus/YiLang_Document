@@ -259,6 +259,34 @@ const slideEntry = ({
 	return trimmedMap;
 };
 
+const balance = ({
+	row,
+	renderMap,
+}: {
+	row: number;
+	renderMap: BlockRenderMap;
+}): Option<BlockRenderMap> => {
+	if (row >= renderMap.length) {
+		return null;
+	}
+
+	/*
+	const newMap = renderMap[row];
+	const balanceFactor = mapRow
+		.sort((a, b) => a.scale - b.scale)
+		.reduce((acc, r) => {
+			// eslint-disable-next-line no-param-reassign
+			acc /= r.scale;
+			return acc;
+		}, 1);
+
+	const newMap = [...renderMap];
+	newMap.splice(row, 1, newRow);
+
+	*/
+	return null;
+};
+
 const scaleEntry = ({
 	id,
 	mode,
@@ -291,39 +319,6 @@ const scaleEntry = ({
 	newRow.splice(column, 1, {
 		...entryToScale,
 		scale: newScale,
-	});
-
-	const newMap = [...renderMap];
-	newMap.splice(row, 1, newRow);
-
-	return newMap;
-};
-
-const balance = ({
-	row,
-	mode,
-	renderMap,
-}: {
-	row: number;
-	mode: 'left' | 'right';
-	renderMap: BlockRenderMap;
-}): Option<BlockRenderMap> => {
-	if (row >= renderMap.length) {
-		return null;
-	}
-	const currentRow = renderMap[row];
-	const rowElementCount = currentRow.length;
-	if (!rowElementCount || rowElementCount < 2) {
-		return null;
-	}
-
-	const newRow = [...currentRow].map((entry) => ({
-		...entry,
-		width: entry.scale + 1,
-	}));
-	newRow.splice(mode === 'left' ? 0 : 1, 1, {
-		...newRow[0],
-		scale: newRow[0].scale ? newRow[0].scale + 1 : 2,
 	});
 
 	const newMap = [...renderMap];

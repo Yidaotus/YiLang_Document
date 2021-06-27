@@ -1,4 +1,4 @@
-import { IDocument } from './Document';
+import { IDocumentLink } from './Document';
 import { UUID } from './UUID';
 
 export interface ITextPosition {
@@ -21,8 +21,7 @@ export interface IDictionaryEntry {
 	key: string;
 	lang: string;
 	translations: string[];
-	sourceDocument?: ISource<IDocument>;
-	firstSeen?: ISource<ISentence>;
+	firstSeen?: IDocumentLink;
 	tags: UUID[];
 	// type: IEntryType;
 	comment?: string;
@@ -56,3 +55,15 @@ export interface IDictionaryTag {
 	color?: string;
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
 }
+
+export type IDictionaryVariantResolved = Omit<IDictionaryVariant, 'tags'> & {
+	tags: IDictionaryTag[];
+};
+
+export type IDictionaryEntryResolved = Omit<
+	IDictionaryEntry,
+	'tags' | 'variations'
+> & {
+	tags: IDictionaryTag[];
+	variations: Array<IDictionaryVariantResolved>;
+};
