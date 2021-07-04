@@ -1,4 +1,3 @@
-import { FragmentableStringNormalized } from 'store/editor/types';
 import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
@@ -13,13 +12,13 @@ const blockTypes = [
 ] as const;
 export type BlockType = typeof blockTypes[number];
 */
+type ContentIdentifier = UUID;
 
 export interface IDialogLine {
 	speaker: string;
-	speech: FragmentableStringNormalized;
+	speech: ContentIdentifier;
 }
 
-type ContentIdentifier = UUID;
 export interface IDocumentBlock<T extends BlockType, C = undefined> {
 	id: ContentIdentifier;
 	type: T;
@@ -80,11 +79,11 @@ export type DocumentBlock =
 
 export type BlockType = DocumentBlock['type'];
 
-const isBlockType =
-	<T extends DocumentBlock['type']>(type: T) =>
-	(block: DocumentBlock): block is Extract<DocumentBlock, { type: T }> => {
-		return block.type === type;
-	};
+const isBlockType = <T extends DocumentBlock['type']>(type: T) => (
+	block: DocumentBlock
+): block is Extract<DocumentBlock, { type: T }> => {
+	return block.type === type;
+};
 
 export type ConfigForType<T extends BlockType> = Extract<
 	DocumentBlock,
