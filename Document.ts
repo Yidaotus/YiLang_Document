@@ -58,3 +58,8 @@ export interface IDocumentLink {
 	fragmentableId: UUID;
 	offset: number;
 }
+
+export interface IDocumentLinkExcerpt {
+	link: IDocumentLink;
+	excerpt: string;
+}
