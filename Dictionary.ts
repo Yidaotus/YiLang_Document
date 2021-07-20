@@ -1,4 +1,5 @@
 import { IDocumentLink } from './Document';
+import { notUndefined } from './Utility';
 import { UUID } from './UUID';
 
 export interface ITextPosition {
@@ -48,6 +49,42 @@ export interface IDictionaryTag {
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
 }
 
-export type IDictionaryEntryResolved = Omit<IDictionaryEntry, 'tags'> & {
+export type IDictionaryEntryResolved = Omit<
+	IDictionaryEntry,
+	'tags' | 'root'
+> & {
+	root?: IDictionaryEntryResolved;
 	tags: IDictionaryTag[];
 };
+
+type UUIDRecord<T> = Partial<{ [key: string]: T }>;
+
+const resolveEntry = ({
+	entry,
+	tags,
+	dictionary,
+}: {
+	entry: IDictionaryEntry;
+	tags: UUIDRecord<IDictionaryTag>;
+	dictionary: UUIDRecord<IDictionaryEntry>;
+}): IDictionaryEntryResolved => {
+	let root: IDictionaryEntryResolved | undefined;
+	if (entry.root) {
+		const rootEntry = dictionary[entry.root];
+		if (rootEntry) {
+			const rootTags = rootEntry.tags
+				.map((id) => tags[id])
+				.filter(notUndefined);
+			root = { ...rootEntry, tags: rootTags, root: undefined };
+		}
+	}
+	const wordTags = entry.tags.map((id) => tags[id]).filter(notUndefined);
+	const resolvedEntry = {
+		...entry,
+		root,
+		tags: wordTags,
+	};
+	return resolvedEntry;
+};
+
+export { resolveEntry };
