@@ -11,6 +11,7 @@ export interface IDocument {
 	id: UUID;
 	blocks: Array<DocumentBlock>;
 	renderMap: BlockRenderMap;
+	lang: string;
 }
 
 export enum HighlightStyle {
@@ -59,7 +60,13 @@ export interface IDocumentLink {
 	offset: number;
 }
 
-export interface IDocumentLinkExcerpt {
+export interface IExcerptedDocumentLink {
 	link: IDocumentLink;
 	excerpt: string;
+}
+
+export interface ILanguageConfig {
+	key: string;
+	title: string;
+	default: boolean;
 }
