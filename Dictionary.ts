@@ -23,17 +23,9 @@ export interface IDictionaryEntry {
 	translations: string[];
 	firstSeen?: IDocumentLink;
 	tags: UUID[];
-	// type: IEntryType;
 	comment?: string;
 	spelling?: string;
-	variations: IDictionaryVariant[];
-}
-
-export interface IDictionaryVariant {
-	key: string;
-	tags?: UUID[];
-	comment: string;
-	spelling?: string;
+	root?: UUID;
 }
 
 export interface IDictionaryLookupSource {
@@ -56,14 +48,6 @@ export interface IDictionaryTag {
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
 }
 
-export type IDictionaryVariantResolved = Omit<IDictionaryVariant, 'tags'> & {
+export type IDictionaryEntryResolved = Omit<IDictionaryEntry, 'tags'> & {
 	tags: IDictionaryTag[];
-};
-
-export type IDictionaryEntryResolved = Omit<
-	IDictionaryEntry,
-	'tags' | 'variations'
-> & {
-	tags: IDictionaryTag[];
-	variations: Array<IDictionaryVariantResolved>;
 };
