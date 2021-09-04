@@ -27,6 +27,7 @@ export interface IDictionaryEntry {
 	comment?: string;
 	spelling?: string;
 	root?: UUID;
+	createdAt: Date;
 }
 
 export interface IDictionaryLookupSource {
