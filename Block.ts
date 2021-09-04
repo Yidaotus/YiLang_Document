@@ -79,11 +79,11 @@ export type DocumentBlock =
 
 export type BlockType = DocumentBlock['type'];
 
-const isBlockType = <T extends DocumentBlock['type']>(type: T) => (
-	block: DocumentBlock
-): block is Extract<DocumentBlock, { type: T }> => {
-	return block.type === type;
-};
+const isBlockType =
+	<T extends DocumentBlock['type']>(type: T) =>
+	(block: DocumentBlock): block is Extract<DocumentBlock, { type: T }> => {
+		return block.type === type;
+	};
 
 export type ConfigForType<T extends BlockType> = Extract<
 	DocumentBlock,

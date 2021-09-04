@@ -260,6 +260,24 @@ const getFragmentsInRange = ({
 	}
 	return selectionResult;
 };
+
+const getFragmentTypesInSelection = (
+	selectedFrgments: Array<FragmentSelectionResult>
+): Array<FragmentType> => {
+	const foundTypes = new Set<FragmentType>();
+
+	for (const fragmentResult of selectedFrgments) {
+		foundTypes.add(fragmentResult.fragment.type);
+		if (fragmentResult.children) {
+			for (const childFragmentResult of fragmentResult.children) {
+				foundTypes.add(childFragmentResult.fragment.type);
+			}
+		}
+	}
+
+	return [...foundTypes];
+};
+
 const checkSelectionForType = ({
 	type,
 	selectedFragments,
@@ -383,4 +401,5 @@ export {
 	getFragmentsInRange,
 	checkSelectionForType,
 	normalizeRange,
+	getFragmentTypesInSelection,
 };
