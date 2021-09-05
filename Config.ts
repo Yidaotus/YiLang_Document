@@ -14,6 +14,7 @@ export interface ILanguageConfig {
 }
 
 export interface IConfig {
+	activeLanguage: UUID;
 	languageConfigs: Array<ILanguageConfig>;
 	activeLanguage: UUID | null;
 }
