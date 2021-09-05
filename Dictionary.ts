@@ -30,12 +30,6 @@ export interface IDictionaryEntry {
 	createdAt: Date;
 }
 
-export interface IDictionaryLookupSource {
-	lang: string;
-	name: string;
-	source: string;
-}
-
 export interface IGrammarPoint {
 	name: string;
 	description: string;
