@@ -1,5 +1,3 @@
-import { number } from 'joi';
-
 export type Option<T> = T | null;
 
 // Use of never is only to type check at compile time
@@ -22,14 +20,14 @@ const substringWithLength = ({
 	root: string;
 	length: number;
 	index: number;
-}) => {
+}): string => {
 	const sideLength = length / 2;
 	let indexLeft = index - sideLength;
 	let indexRight = index + sideLength;
 	if (indexLeft < 0) {
 		indexRight = sideLength + indexLeft * -1;
 	} else if (indexRight > root.length) {
-		indexLeft = indexLeft - (indexRight - root.length);
+		indexLeft -= indexRight - root.length;
 	}
 	return root.substring(indexLeft, indexRight);
 };

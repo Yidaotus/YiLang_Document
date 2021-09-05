@@ -1,3 +1,5 @@
+import { UUID } from './UUID';
+
 export interface IDictionaryLookupSource {
 	priority: number;
 	name: string;
@@ -5,12 +7,13 @@ export interface IDictionaryLookupSource {
 }
 
 export interface ILanguageConfig {
-	key: string;
-	title: string;
+	key: UUID;
+	name: string;
 	default: boolean;
 	lookupSources: Array<IDictionaryLookupSource>;
 }
 
 export interface IConfig {
 	languageConfigs: Array<ILanguageConfig>;
+	activeLanguage: UUID | null;
 }

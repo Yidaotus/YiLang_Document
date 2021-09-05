@@ -64,9 +64,3 @@ export interface IExcerptedDocumentLink {
 	link: IDocumentLink;
 	excerpt: string;
 }
-
-export interface ILanguageConfig {
-	key: string;
-	title: string;
-	default: boolean;
-}
