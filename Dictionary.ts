@@ -29,12 +29,6 @@ export interface IDictionaryEntry {
 	root?: UUID;
 }
 
-export interface IDictionaryLookupSource {
-	lang: string;
-	name: string;
-	source: string;
-}
-
 export interface IGrammarPoint {
 	name: string;
 	description: string;
