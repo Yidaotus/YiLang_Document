@@ -1,4 +1,5 @@
 import { DocumentBlock } from './Block';
+import { IDocumentLink } from './Dictionary';
 import { IFragmentableRange } from './Fragment';
 import { BlockRenderMap } from './RenderMap';
 import { UUID } from './UUID';
@@ -52,12 +53,6 @@ export interface IDocumentIdentifier {
 	blockId: UUID;
 	fragmentableId: UUID;
 	fragmentId: UUID;
-}
-
-export interface IDocumentLink {
-	documentId: UUID;
-	fragmentableId: UUID;
-	offset: number;
 }
 
 export interface IExcerptedDocumentLink {
