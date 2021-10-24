@@ -29,7 +29,18 @@ const substringWithLength = ({
 	} else if (indexRight > root.length) {
 		indexLeft -= indexRight - root.length;
 	}
-	return root.substring(indexLeft, indexRight);
+	const foundSubstring = root.substring(indexLeft, indexRight);
+	const foundSubstringSplit = foundSubstring.split('\n');
+	let currentSplitLength = 0;
+	let currentSplitIndex = 0;
+	while (
+		index > currentSplitLength &&
+		currentSplitIndex < foundSubstringSplit.length - 1
+	) {
+		currentSplitLength += foundSubstringSplit[currentSplitIndex].length;
+		currentSplitIndex++;
+	}
+	return foundSubstringSplit[currentSplitIndex];
 };
 
 export { assertNever, ensureNever, notUndefined, substringWithLength };
