@@ -2,14 +2,13 @@ import { DocumentBlock } from './Block';
 import { IDocumentLink } from './Dictionary';
 import { IFragmentableRange } from './Fragment';
 import { BlockRenderMap } from './RenderMap';
-import { UUID } from './UUID';
 
 export interface IDocument {
 	name?: string;
 	createdAt: Date;
 	updatedAt: Date;
 	title: string;
-	id: UUID;
+	id: string;
 	blocks: Array<DocumentBlock>;
 	renderMap: BlockRenderMap;
 	lang: string;
@@ -44,15 +43,15 @@ export interface IRubyChunk {
 }
 
 export interface IDocumentSelection {
-	blockId: UUID;
-	fragmentableId: UUID;
+	blockId: string;
+	fragmentableId: string;
 	fragmentableRange: IFragmentableRange;
 }
 
 export interface IDocumentIdentifier {
-	blockId: UUID;
-	fragmentableId: UUID;
-	fragmentId: UUID;
+	blockId: string;
+	fragmentableId: string;
+	fragmentId: string;
 }
 
 export interface IExcerptedDocumentLink {

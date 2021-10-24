@@ -1,4 +1,3 @@
-import { getUUID, UUID } from './UUID';
 import { Option } from './Utility';
 
 export interface IRenderMapIndex {
@@ -9,7 +8,7 @@ export interface IRenderMapIndex {
 const MAX_ELEMENTS_PER_ROW = 10;
 export interface IRenderMapEntry {
 	type: 'block' | 'empty';
-	id: UUID;
+	id: string;
 	// How many columns does this entry fill in relation to other blocks
 	scale: number;
 }
@@ -36,7 +35,7 @@ const findGridPositionById = ({
 	id,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	renderMap: BlockRenderMap;
 }): Option<{ row: number; column: number }> => {
 	for (const [y, row] of renderMap.entries()) {
@@ -135,7 +134,7 @@ const moveEntryToEmpty = ({
 	direction,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	direction: 'up' | 'down';
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
@@ -222,7 +221,7 @@ const slideEntry = ({
 	direction,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	direction: 'up' | 'down';
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
@@ -292,7 +291,7 @@ const scaleEntry = ({
 	mode,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	mode: 'up' | 'down';
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
@@ -391,7 +390,7 @@ const splitRow = ({
 		} else {
 			newRowElements.push({
 				type: 'empty',
-				id: getUUID(),
+				id: '',
 				scale: 1,
 			});
 		}
@@ -408,7 +407,7 @@ const addRow = ({
 	position,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	position: 'start' | 'end';
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
@@ -497,7 +496,7 @@ const addEntry = ({
 	position,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	position: 'start' | 'end';
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
@@ -542,7 +541,7 @@ const removeEntry = ({
 	id,
 	renderMap,
 }: {
-	id: UUID;
+	id: string;
 	renderMap: BlockRenderMap;
 }): Option<BlockRenderMap> => {
 	const blockIndex = findGridPositionById({ id, renderMap });

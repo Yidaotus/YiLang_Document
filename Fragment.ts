@@ -1,5 +1,3 @@
-import { UUID, getUUID } from './UUID';
-
 export const FRAGMENTABLETYPEID = 'fragmentedstring';
 export const FRAGMENTTYPEID = 'fragment';
 export const FILLERFRAGMENTTYPEID = 'filler-fragment';
@@ -49,7 +47,7 @@ export interface IMarkFragmentData extends IFragmentData {
 
 export interface IWordFragmentData extends IFragmentData {
 	type: 'Word';
-	dictId: UUID;
+	dictId: string;
 }
 
 export interface ISentenceFragmentData extends IFragmentData {
@@ -71,7 +69,7 @@ export type FragmentData =
 	| ISimpleFragmentData;
 
 export interface IFragment<T extends IFragmentData> {
-	id: UUID;
+	id: string;
 	range: IFragmentableRange;
 	// Not yet used. Helpfull when different fragments overlap and get
 	// fragmented themselves
@@ -91,15 +89,15 @@ export type ResolvedFragment<T extends IFragmentData> = IFragment<T> & {
 	value: string;
 };
 export interface IFragmentableString {
-	id: UUID;
+	id: string;
 	root: string;
 	fragments: Array<Fragment>;
 	showSpelling: boolean;
-	highlightedFragment?: UUID;
+	highlightedFragment?: string;
 }
 
 const FragmentableString = (initial?: string): IFragmentableString => ({
-	id: getUUID(),
+	id: '',
 	root: initial || '',
 	fragments: [],
 	showSpelling: true,
