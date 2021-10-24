@@ -1,15 +1,10 @@
-import { IDocumentLink } from './Document';
 import { notUndefined } from './Utility';
 import { UUID } from './UUID';
 
-export interface ITextPosition {
-	start: number;
-	end: number;
-}
-
-export interface ISource<T> {
-	pos: ITextPosition;
-	source: T;
+export interface IDocumentLink {
+	documentId: UUID;
+	position: Array<number>;
+	offset: number;
 }
 
 export interface ISentence {
@@ -27,6 +22,7 @@ export interface IDictionaryEntry {
 	comment?: string;
 	spelling?: string;
 	root?: UUID;
+	createdAt: Date;
 }
 
 export interface IGrammarPoint {
@@ -43,42 +39,6 @@ export interface IDictionaryTag {
 	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
 }
 
-export type IDictionaryEntryResolved = Omit<
-	IDictionaryEntry,
-	'tags' | 'root'
-> & {
-	root?: IDictionaryEntryResolved;
+export type IDictionaryEntryResolved = Omit<IDictionaryEntry, 'tags'> & {
 	tags: IDictionaryTag[];
 };
-
-type UUIDRecord<T> = Partial<{ [key: string]: T }>;
-
-const resolveEntry = ({
-	entry,
-	tags,
-	dictionary,
-}: {
-	entry: IDictionaryEntry;
-	tags: UUIDRecord<IDictionaryTag>;
-	dictionary: UUIDRecord<IDictionaryEntry>;
-}): IDictionaryEntryResolved => {
-	let root: IDictionaryEntryResolved | undefined;
-	if (entry.root) {
-		const rootEntry = dictionary[entry.root];
-		if (rootEntry) {
-			const rootTags = rootEntry.tags
-				.map((id) => tags[id])
-				.filter(notUndefined);
-			root = { ...rootEntry, tags: rootTags, root: undefined };
-		}
-	}
-	const wordTags = entry.tags.map((id) => tags[id]).filter(notUndefined);
-	const resolvedEntry = {
-		...entry,
-		root,
-		tags: wordTags,
-	};
-	return resolvedEntry;
-};
-
-export { resolveEntry };
