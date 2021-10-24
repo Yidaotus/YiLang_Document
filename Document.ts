@@ -7,7 +7,7 @@ export interface IDocument {
 	name?: string;
 	createdAt: Date;
 	updatedAt: Date;
-	title: string;
+	title: string | null;
 	id: UUID;
 	blocks: Array<DocumentBlock>;
 	renderMap: BlockRenderMap;
