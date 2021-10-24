@@ -1,8 +1,5 @@
-import { notUndefined } from './Utility';
-import { UUID } from './UUID';
-
 export interface IDocumentLink {
-	documentId: UUID;
+	documentId: string;
 	position: Array<number>;
 	offset: number;
 }
@@ -13,15 +10,15 @@ export interface ISentence {
 }
 
 export interface IDictionaryEntry {
-	id: UUID;
+	id: string;
 	key: string;
 	lang: string;
 	translations: string[];
 	firstSeen?: IDocumentLink;
-	tags: UUID[];
+	tags: string[];
 	comment?: string;
 	spelling?: string;
-	root?: UUID;
+	root?: string;
 	createdAt: Date;
 }
 
@@ -32,7 +29,7 @@ export interface IGrammarPoint {
 }
 
 export interface IDictionaryTag {
-	id: UUID;
+	id: string;
 	name: string;
 	lang: string;
 	color?: string;
