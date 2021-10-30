@@ -1,4 +1,3 @@
-import { UUID } from './UUID';
 import { IFragmentableString } from './Fragment';
 
 /*
@@ -12,7 +11,7 @@ const blockTypes = [
 ] as const;
 export type BlockType = typeof blockTypes[number];
 */
-type ContentIdentifier = UUID;
+type ContentIdentifier = string;
 
 export interface IDialogLine {
 	speaker: string;
