@@ -5,9 +5,8 @@ export interface IDictionaryLookupSource {
 }
 
 export interface ILanguageConfig {
-	key: string;
+	id: string;
 	name: string;
-	default: boolean;
 	lookupSources: Array<IDictionaryLookupSource>;
 }
 
