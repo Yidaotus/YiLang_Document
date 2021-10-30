@@ -7,7 +7,6 @@ export interface IDictionaryLookupSource {
 export interface ILanguageConfig {
 	id: string;
 	name: string;
-	default: boolean;
 	lookupSources: Array<IDictionaryLookupSource>;
 }
 
