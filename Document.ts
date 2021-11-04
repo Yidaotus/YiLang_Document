@@ -3,15 +3,13 @@ import { IDocumentLink } from './Dictionary';
 import { IFragmentableRange } from './Fragment';
 import { BlockRenderMap } from './RenderMap';
 
-export interface IDocument {
-	name?: string;
+export interface IDocumentSerialized {
+	id: string;
+	lang: string;
+	title: string;
+	serializedDocument: string;
 	createdAt: Date;
 	updatedAt: Date;
-	title: string;
-	id: string;
-	blocks: Array<DocumentBlock>;
-	renderMap: BlockRenderMap;
-	lang: string;
 }
 
 export enum HighlightStyle {

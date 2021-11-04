@@ -4,9 +4,12 @@ export interface IDocumentLink {
 	offset: number;
 }
 
-export interface ISentence {
+export interface IDictionarySentence {
+	id: string;
 	content: string;
 	translation: string;
+	lang: string;
+	source?: IDocumentLink;
 }
 
 export interface IDictionaryEntry {
