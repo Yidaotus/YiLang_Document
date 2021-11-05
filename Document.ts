@@ -1,7 +1,5 @@
-import { DocumentBlock } from './Block';
 import { IDocumentLink } from './Dictionary';
 import { IFragmentableRange } from './Fragment';
-import { BlockRenderMap } from './RenderMap';
 
 export interface IDocumentSerialized {
 	id: string;
