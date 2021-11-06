@@ -10,7 +10,13 @@ export interface ILanguageConfig {
 	lookupSources: Array<IDictionaryLookupSource>;
 }
 
+export interface IEditorConfig {
+	autoSave: boolean;
+	saveEveryNActions: number;
+}
+
 export interface IConfig {
 	languageConfigs: Array<ILanguageConfig>;
 	activeLanguage: string | null;
+	editorConfig: IEditorConfig;
 }
