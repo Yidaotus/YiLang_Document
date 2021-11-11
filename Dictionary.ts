@@ -1,6 +1,7 @@
 export interface IDocumentLink {
 	documentId: string;
 	position: Array<number>;
+	sentenceId: string;
 	offset: number;
 }
 
