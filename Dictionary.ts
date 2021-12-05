@@ -22,7 +22,7 @@ export interface IDictionaryEntry {
 	tags: string[];
 	comment?: string;
 	spelling?: string;
-	root?: string;
+	root: string[];
 	createdAt: Date;
 }
 
