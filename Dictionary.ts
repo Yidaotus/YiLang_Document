@@ -1,3 +1,5 @@
+import { DictionaryEntryID, DictionaryTagID } from './Utility';
+
 export interface IDocumentLink {
 	documentId: string;
 	position: Array<number>;
@@ -14,15 +16,15 @@ export interface IDictionarySentence {
 }
 
 export interface IDictionaryEntry {
-	id: string;
+	id: DictionaryEntryID;
 	key: string;
 	lang: string;
 	translations: string[];
 	firstSeen?: IDocumentLink;
-	tags: string[];
+	tags: DictionaryTagID[];
 	comment?: string;
 	spelling?: string;
-	root: string[];
+	roots: DictionaryEntryID[];
 	createdAt: Date;
 }
 
@@ -33,13 +35,14 @@ export interface IGrammarPoint {
 }
 
 export interface IDictionaryTag {
-	id: string;
+	id: DictionaryTagID;
 	name: string;
 	lang: string;
 	color?: string;
-	grammarPoint?: IGrammarPoint; // Te versions are used for conjugation ect..
+	grammarPoint?: IGrammarPoint;
 }
 
-export type IDictionaryEntryResolved = Omit<IDictionaryEntry, 'tags'> & {
-	tags: IDictionaryTag[];
-};
+export type IDictionaryEntryResolved = Omit<
+	IDictionaryEntry,
+	'tags' | 'roots'
+> & { tags: Array<IDictionaryTag>; roots: Array<IDictionaryEntry> };

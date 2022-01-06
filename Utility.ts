@@ -1,4 +1,27 @@
 export type Option<T> = T | null;
+export type DictionaryReference<T extends string> = string & { idType: T };
+export type DictionaryEntryID = DictionaryReference<'DictionaryEntry'>;
+export type DictionaryTagID = DictionaryReference<'DictionaryTag'>;
+
+const isReference = <T, R extends string, E extends DictionaryReference<R>>(
+	t: T | E
+): t is E => {
+	return (t as E).idType !== undefined;
+};
+
+const isNotString = <T extends unknown>(v: T | string): v is T =>
+	typeof v !== 'string';
+
+const isString = <T extends unknown>(v: T | string): v is string =>
+	typeof v === 'string';
+
+const isEntryId = <T>(t: T | DictionaryEntryID): t is DictionaryEntryID => {
+	return (t as DictionaryEntryID).idType !== undefined;
+};
+
+const isTagId = <T>(t: T | DictionaryTagID): t is DictionaryTagID => {
+	return (t as DictionaryTagID).idType !== undefined;
+};
 
 // Use of never is only to type check at compile time
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,4 +66,12 @@ const substringWithLength = ({
 	return foundSubstringSplit[currentSplitIndex];
 };
 
-export { assertNever, ensureNever, notUndefined, substringWithLength };
+export {
+	assertNever,
+	ensureNever,
+	notUndefined,
+	substringWithLength,
+	isString,
+	isNotString,
+	isReference,
+};
