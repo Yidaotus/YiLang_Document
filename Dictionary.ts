@@ -1,4 +1,4 @@
-import { DictionaryEntryID, DictionaryTagID } from './Utility';
+import { DictionaryEntryID, DictionaryTagID, Ephemeral } from './Utility';
 
 export interface IDocumentLink {
 	documentId: string;
@@ -27,6 +27,7 @@ export interface IDictionaryEntry {
 	roots: DictionaryEntryID[];
 	createdAt: Date;
 }
+export type IDictionaryEntryEphemeral = Ephemeral<IDictionaryEntry>;
 
 export interface IGrammarPoint {
 	name: string;
@@ -41,6 +42,7 @@ export interface IDictionaryTag {
 	color?: string;
 	grammarPoint?: IGrammarPoint;
 }
+export type IDictionaryTagEphemeral = Ephemeral<IDictionaryTag>;
 
 export type IDictionaryEntryResolved = Omit<
 	IDictionaryEntry,
