@@ -4,6 +4,7 @@ import { IDictionaryEntry, IDictionaryTag } from './Dictionary';
 export type Option<T> = T | null;
 export type DictionaryReference<T extends string> = string; // & { idType: T };
 export type DictionaryEntryID = DictionaryReference<'DictionaryEntry'>;
+export type DictionarySentenceID = DictionaryReference<'DictionarySentence'>;
 export type DictionaryTagID = DictionaryReference<'DictionaryTag'>;
 export type Ephemeral<T> = Omit<T, 'id' | 'lang'>;
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
