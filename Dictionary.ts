@@ -11,6 +11,7 @@ export interface IDictionarySentence {
 	translation: string;
 	lang: string;
 	source?: IDocumentLink;
+	createdAt: Date;
 }
 
 export interface IDictionaryEntry {
@@ -22,7 +23,7 @@ export interface IDictionaryEntry {
 	tags: string[];
 	comment?: string;
 	spelling?: string;
-	root: string[];
+	roots: string[];
 	createdAt: Date;
 }
 
