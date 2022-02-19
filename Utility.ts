@@ -1,4 +1,4 @@
-import { IApiResponse } from 'api/definitions/api';
+import { IApiResponse } from '../helpers/api';
 import { IDictionaryEntry, IDictionaryTag } from './Dictionary';
 
 export type Option<T> = T | null;
